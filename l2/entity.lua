@@ -1,4 +1,4 @@
-justEntity = Rect:extend()
+Entity = Rect:extend()
 
 function Entity:new(options)
     Entity.super.new(self)
@@ -6,8 +6,10 @@ function Entity:new(options)
     self.last = Rect()
     self.velocity = Point()
     self.accel = Point()
-    self.maxVelocity = Point()
+    self.maxVelocity = Point(1000, 1000)
 	self.moves = false
+	self.bounce = 0
+	self.origin = Point()
 
 	self.angle = 0
     self.angularVelocity = 0
@@ -35,6 +37,8 @@ function Entity:new(options)
     self.color = nil
     self.shader = nil
     self.alpha = 1
+
+	self.removable = true
 
     self.flashColor = { 255, 255, 255 }
     self.flashTimer = 0
@@ -217,9 +221,9 @@ function Entity:separate(e, axis)
 end
 
 function Entity:getNearbyEntities(maxDistance, filter)
-    local s = Game.scene
+    local s = game.state.scene
     maxDistance = maxDistance + math.min(self.w, self.h)
-    local x, y = self:middleX(), self:middleY()
+    local x, y = self:centerX(), self:centerY()
 
     return s:getEntitiesWithinRadius(x, y, maxDistance, self, filter)
 end
@@ -264,7 +268,7 @@ function Entity:warp(x, y)
 	self.x = x
 	self.y = y
 
-	Rect.clone(self, self.last)
+	self.last = Rect.clone(self, self.last)
 
 	if self.scene then
 		self.scene.sh:update(self, self.x, self.y)
@@ -381,7 +385,7 @@ function Entity:makeImage(width, height, r, g, b, a)
 end
 
 function Entity:playSound(filename, gain, always)
-	if not Game.scene.camera:overlaps(self) and not always then
+	if not game.state.scene.camera:overlaps(self) and not always then
 		return
 	end
 
@@ -389,7 +393,10 @@ function Entity:playSound(filename, gain, always)
 
 	sound:setVolume(gain or 1)
 	sound:rewind()
-	sound:play()
+
+	if SOUNDS == 1 then
+		sound:play()
+	end
 
 	return sound
 end
@@ -399,7 +406,7 @@ function Entity:updateMovement(dt)
 		return
 	end
 
-	Rect.clone(self, self.last)
+	self.last = Rect.clone(self, self.last)
 
 	self.velocity.x = self.velocity.x + self.accel.x * dt
 	self.velocity.y = self.velocity.y + self.accel.y * dt
@@ -414,24 +421,6 @@ function Entity:updateMovement(dt)
 
 	self.x = self.x + self.velocity.x * dt
 	self.y = self.y + self.velocity.y * dt
-
-	if self.accel.x == 0 and self.drag.x > 0 then
-		local sign = lume.sign(self.velocity.x)
-		self.velocity.x = self.velocity.x - self.drag.x * dt * sign
-
-		if (self.velocity.x < 0) ~= (sign < 0) then
-			self.velocity.x = 0
-		end
-	end
-
-	if self.accel.y == 0 and self.drag.y > 0 then
-		local sign = lume.sign(self.velocity.y)
-		self.velocity.y = self.velocity.y - self.drag.y * dt * sign
-
-		if (self.velocity.y < 0) ~= (sign < 0) then
-			self.velocity.y = 0
-		end
-	end
 
 	self.angle = self.angle + self.angularVelocity * dt
 end
@@ -538,7 +527,8 @@ function Entity:update(dt)
 end
 
 function Entity:getDrawArgs()
-	return self.frames[self.frame], self.x, self.y, math.rad(self.angle)
+	return self.frames[self.frame], self.x + self.origin.x, self.y + self.origin.y, math.rad(self.angle), 1, 1,
+	self.origin.x, self.origin.y
 end
 
 function Entity:getDrawColorArgs()

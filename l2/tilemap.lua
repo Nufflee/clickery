@@ -8,7 +8,7 @@ function Tile:new(image, size, index)
 	self.frame = index
 	self.last = self
 	self.moves = false
-	self.immovable = true
+	self.static = true
 end
 
 function Tile:setSlope(left, right, side)
@@ -141,7 +141,7 @@ function Tilemap:loadLua(filename, objHandler, tileLayer)
 						o[k] = tonumber(v) or v
 					end
 
-					objHandler(l, o)
+					objHandler(l.name, o)
 				end
 			end
 		end
@@ -159,6 +159,10 @@ function Tilemap:getTile(x, y)
 
 		return t
 	end
+end
+
+function Tilemap:setTile(t, x, y)
+	self.data[x + y * self.widthInTiles + 1] = t
 end
 
 local overlapsState

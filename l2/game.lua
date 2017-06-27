@@ -13,7 +13,7 @@ function Game:new()
 	self.shakeTimer = 0
 	self.flashTimer = 0
 	self.flashColor = nil
-	self.backgroundColor = { 50, 50, 50 }
+	self.backgroundColor = { 95, 87, 79 }
 	self.drawCalls = 0
 
 	canvas = love.graphics.newCanvas(WIDTH, HEIGHT)
@@ -90,10 +90,16 @@ function Game:draw()
 	love.graphics.setCanvas(canvas)
 	love.graphics.clear(self.backgroundColor[1], self.backgroundColor[2], self.backgroundColor[3], 255)
 
+	love.graphics.push()
+
 	local shake = math.max(self.shakeAmount, 0)
 	love.graphics.translate(shake * lume.random(-1, 1), shake * lume.random(-1, 1))
 
 	self.state:draw()
+
+	love.graphics.pop()
+
+	self.state:drawUI()
 
 	if self.flashTimer > 0 then
 		love.graphics.clear(unpack(self.flashColor))

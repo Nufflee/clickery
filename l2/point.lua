@@ -7,7 +7,24 @@ end
 
 function Point:set(x, y)
 	self.x = x or self.x
-	self.y = y and y or x and x or self.y
+	self.y = y or self.y
+end
+
+function Point:add(p)
+	self.x = self.x + p.x
+	self.y = self.y + p.y
+end
+
+function Point:rotate(phi)
+	phi = math.rad(phi)
+
+	local c = math.cos(phi)
+	local s = math.sin(phi)
+
+	self.x = c * self.x - s * self.y
+	self.y = s * self.x + c * self.y
+
+	return self
 end
 
 function Point:clone(p)
@@ -15,7 +32,7 @@ function Point:clone(p)
 
     dest.x = self.x
     dest.y = self.y
-	
+
     return dest
 end
 

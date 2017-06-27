@@ -27,6 +27,10 @@ function love.load()
 	Input.register({
 		[ "click" ] = { "mouse:1" }
 	})
+
+	UI.init();
+
+	font = love.graphics.getFont()
 end
 
 function love.update(dt)
@@ -36,6 +40,8 @@ end
 
 function love.draw()
 	game:draw()
+
+	UI.reset()
 end
 
 function love.keypressed(key)
@@ -43,7 +49,12 @@ function love.keypressed(key)
 end
 
 function love.mousepressed(x, y, button)
+	UI.mouseDown()
 	game:mousePressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button, isTouch)
+	UI.mouseUp()
 end
 
 function love.quit()

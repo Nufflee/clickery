@@ -7,6 +7,7 @@ function Assets.load(filename)
 	if not res then
 	    if filename:match("%.png$") then
 	 		res = love.graphics.newImage(filename)
+			res:setFilter("nearest")
 	    elseif filename:match("%.ogg$") or filename:match("%.wav") then
 			res = love.audio.newSource(filename)
 	    else

@@ -90,28 +90,34 @@ function Debug.draw()
 	if imgui.Begin("Debug") then
 		imgui.Text(love.timer.getFPS() .. " FPS")
 		imgui.Text("Draw calls: " .. game.drawCalls)
-		imgui.Text("Entities: " .. game.state.scene.sh:info("entities"))
+
+		if  game.state.scene then
+			imgui.Text("Entities: " .. game.state.scene.sh:info("entities"))
+		end
+
 		imgui.Text("State: " .. game.state.name)
 		imgui.End()
 	end
 
-	if imgui.Begin("Entities") then
-		status, filter = imgui.InputText("Filter", filter, 100)
-		imgui.BeginChild("Entities")
+	if  game.state.scene then
+		if imgui.Begin("Entities") then
+			status, filter = imgui.InputText("Filter", filter, 100)
+			imgui.BeginChild("Entities")
 
-		for i, e in ipairs(game.state.scene.entities) do
-			local name = e.id
+			for i, e in ipairs(game.state.scene.entities) do
+				local name = e.id
 
-			if name:find(filter, 0, true) and imgui.TreeNode(name) then
-				Debug.drawEntity(e)
-				imgui.TreePop()
+				if name:find(filter, 0, true) and imgui.TreeNode(name) then
+					Debug.drawEntity(e)
+					imgui.TreePop()
+				end
 			end
+
+			imgui.EndChild()
+			imgui.End()
 		end
-
-		imgui.EndChild()
-		imgui.End()
 	end
-
+	
 	imgui.Render()
 end
 

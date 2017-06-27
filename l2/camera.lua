@@ -3,7 +3,7 @@ Camera = Entity:extend()
 function Camera:new(follow)
     Camera.super.new(self)
     self.follow = follow
-    self.speed = 2
+    self.speed = 0.2
 	self.w = WIDTH
 	self.h = HEIGHT
 end
@@ -19,9 +19,14 @@ end
 
 function Camera:update(dt)
     if self.follow ~= nil then
-        if self:getDistance(self.follow) > 5 then
-            self.x = lume.lerp(self.x, self.follow:getCenterX() - self.w / 2, self.speed)
-            self.y = lume.lerp(self.y, self.follow:getCenterY() - self.h / 2, self.speed)
-        end
-    end
+		local a = math.rad(self.follow.cannon.angle - 90)
+
+		if self.follow.dead then
+        	self.x = lume.clamp(lume.smooth(self.x, self.follow:centerX() - self.w / 2, self.speed), 0, map.w - WIDTH)
+        	self.y = lume.clamp(lume.smooth(self.y, self.follow:centerY() - self.h / 2, self.speed), 0, map.h - HEIGHT)
+		else
+			self.x = lume.clamp(lume.smooth(self.x, self.follow:centerX() - self.w / 2 + math.cos(a) * 40, self.speed), 0, map.w - WIDTH)
+			self.y = lume.clamp(lume.smooth(self.y, self.follow:centerY() - self.h / 2 + math.sin(a) * 40, self.speed), 0, map.h - HEIGHT)
+		end
+	end
 end

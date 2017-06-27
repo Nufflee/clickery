@@ -21,6 +21,8 @@ function Scene:add(e)
 
     e.scene = self
     e:onAdd(self)
+
+    return e
 end
 
 function Scene:remove(e)
@@ -61,7 +63,7 @@ end
 
 local function handleEntityWithinRadius(e, t, t2, x, y, r, omit, filter)
     if e ~= omit and filter(e) then
-        local sz = math.min(e.width, e.height)
+        local sz = math.min(e.w, e.h)
         local dist = lume.distance(x, y, e:centerX(), e:centerY())
 
         if dist <= r + sz then
@@ -120,7 +122,7 @@ function Scene:update(dt)
             self.sh:update(e, e:get())
         end
 
-        if e.scene == self and e.dead then
+        if e.scene == self and e.dead and e.removable then
             self:remove(e)
         end
     end

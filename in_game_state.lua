@@ -4,15 +4,6 @@ function InGameState:init()
 	InGameState.super.init(self)
 
 	self.name = "ingame"
-	self.scene:add(player)
-
-	map:loadLua("data/maps/1.lua", lume.fn(self.loadObject, self))
-
-	map:loadMetaImage("data/images/meta.png", {
-
-	})
-
-	self.scene:add(map)
 end
 
 function InGameState:loadObject(layer, obj)
@@ -25,6 +16,10 @@ end
 
 function InGameState:update(dt)
 	InGameState.super.update(self, dt)
+
+	if(UI.button("Click me", 0, 0, 64, 22)) then
+		log.info("Clicked!")
+	end
 end
 
 function InGameState:draw()

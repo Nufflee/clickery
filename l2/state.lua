@@ -6,7 +6,7 @@ function State:new()
 end
 
 function State:init()
-	self.scene = Scene(8)
+	self.scene = Scene(32)
 end
 
 function State:destroy()
@@ -19,4 +19,8 @@ end
 
 function State:draw()
 	self.scene:draw()
+end
+
+function State:drawUI()
+
 end

@@ -47,6 +47,8 @@ function splashlib.new(init)
   init = init or {}
   local self = {}
   local width, height = love.graphics.getDimensions()
+  width = width / 3
+  height = height / 3
 
   self.background = init.background == nil and colors.bg or init.background
   self.delay_before = init.delay_before or 0.3
@@ -78,8 +80,8 @@ function splashlib.new(init)
       local ox = rain.ox
       local oy = rain.oy
 
-      local batch_w = 2 * math.ceil(love.graphics.getWidth() / sx) + 2
-      local batch_h = 2 * math.ceil(love.graphics.getHeight() / sy) + 2
+      local batch_w = 2 * math.ceil(love.graphics.getWidth() / sx / 3) + 2
+      local batch_h = 2 * math.ceil(love.graphics.getHeight() / sy / 3) + 2
 
       batch:clear()
 

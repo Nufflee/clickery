@@ -22,6 +22,15 @@ function Rect:get(expand)
 	return self.x, self.y, self.w, self.h
 end
 
+function Rect:overlapsX(r)
+	return self.x < r.x + r.w and self.x + self.w > r.x
+end
+
+
+function Rect:overlapsY(r)
+	return self.y < r.y + r.h and self.y + self.h > r.y
+end
+
 function Rect:clone(r)
 	dest = dest or Rect()
 
