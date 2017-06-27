@@ -1,4 +1,4 @@
-Entity = Rect:extend()
+justEntity = Rect:extend()
 
 function Entity:new(options)
     Entity.super.new(self)
